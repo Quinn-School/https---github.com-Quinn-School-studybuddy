@@ -3,7 +3,8 @@
 // and when it reaches 0 it increases the session count by 1 
 
 //let time = 25 * 60;
-let time = 10 //this is just for testing
+const POMODORO_DURATION = 10; // seconds (shortened for testing)
+let time = POMODORO_DURATION;
 let timerInterval = null;
 
 function updateTimerDisplay() {
@@ -86,7 +87,7 @@ document.getElementById("start-btn").onclick = () => {
         if (time <= 0) {
             clearInterval(timerInterval);
             timerInterval = null;
-            time = 25 * 60;
+            time = POMODORO_DURATION;
             increaseSessions();
             updateTimerDisplay();
         }
@@ -96,7 +97,7 @@ document.getElementById("start-btn").onclick = () => {
 document.getElementById("reset-btn").onclick = () => {
     clearInterval(timerInterval);
     timerInterval = null;
-    time = 25 * 60;
+    time = POMODORO_DURATION;
     updateTimerDisplay();
 };
 
