@@ -2,8 +2,8 @@
 // its the start of the promodo timer, it counts down from 25 minutes
 // and when it reaches 0 it increases the session count by 1 
 
-//let time = 25 * 60;
-let time = 10; // for testing purposes, set to 10 seconds
+let time = 25 * 60;
+
 let timerInterval = null;
 
 function updateTimerDisplay() {
