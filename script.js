@@ -1,9 +1,16 @@
 
-// its the start of the promodo timer, it counts down from 25 minutes
-// and when it reaches 0 it increases the session count by 1 
 
-//let time = 25 * 60;
-let time = 10 //this is just for testing
+//const WORK_DURATION = 25 * 60;
+//const BREAK_DURATION = 10 * 60;
+
+//shortened durations for testing
+//const WORK_DURATION = 15;
+//const BREAK_DURATION = 5;
+
+let audioCtx = null;
+
+let mode = 'work'; // 'work' or 'break'
+let time = WORK_DURATION;
 let timerInterval = null;
 
 function updateTimerDisplay() {
@@ -11,9 +18,12 @@ function updateTimerDisplay() {
     const secs = time % 60;
     document.getElementById("timer-display").textContent =
         `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+    // update mode display if present
+    const modeEl = document.getElementById('timer-mode');
+    if (modeEl) modeEl.textContent = mode === 'work' ? 'Work' : 'Break';
 }
 
-// Progress tracker: store completed pomodoro sessions and update UI
+// Session tracking
 let sessions = parseInt(localStorage.getItem("sessions") || "0", 10) || 0;
 
 function updateSessionsDisplay() {
@@ -54,10 +64,25 @@ function notifySessionComplete() {
     }
 }
 
-// play a short beep using the Web Audio API
+// request notification permission on start
+function requestNotificationPermission() {
+    if (!('Notification' in window)) return;
+    try {
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    } catch (e) {
+        // ignore
+    }
+}
+
+// play a short beep sound 
+//just placeholder for now
 function playBeep() {
     try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        // create the AudioContext on demand (should be created after a user gesture)
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = audioCtx;
         const o = ctx.createOscillator();
         const g = ctx.createGain();
         o.type = 'sine';
@@ -70,13 +95,13 @@ function playBeep() {
         g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
         o.stop(ctx.currentTime + 0.21);
     } catch (e) {
-        // some browsers may block autoplay; ignore if unavailable
+        // ignore audio errors
     }
 }
 
 updateSessionsDisplay();
 
-document.getElementById("start-btn").onclick = () => {
+function startInterval() {
     if (timerInterval) return;
 
     timerInterval = setInterval(() => {
@@ -86,17 +111,43 @@ document.getElementById("start-btn").onclick = () => {
         if (time <= 0) {
             clearInterval(timerInterval);
             timerInterval = null;
-            time = 25 * 60;
-            increaseSessions();
-            updateTimerDisplay();
+
+            if (mode === 'work') {
+                // finished a work session
+                increaseSessions();
+                // switch to break and autoplay it
+                mode = 'break';
+                time = BREAK_DURATION;
+                updateTimerDisplay();
+                startInterval(); // autoplay break
+            } else {
+                // finished a break session — switch back to work and autoplay the next work session
+                mode = 'work';
+                time = WORK_DURATION;
+                updateTimerDisplay();
+                startInterval(); // autoplay next work session
+            }
         }
     }, 1000);
+}
+
+document.getElementById("start-btn").onclick = () => {
+    requestNotificationPermission();
+    // create/resume audio context on user gesture so beeps will play
+    try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended' && typeof audioCtx.resume === 'function') audioCtx.resume();
+    } catch (e) {
+        // ignore audio context creation errors
+    }
+    startInterval();
 };
 
 document.getElementById("reset-btn").onclick = () => {
     clearInterval(timerInterval);
     timerInterval = null;
-    time = 25 * 60;
+    mode = 'work';
+    time = WORK_DURATION;
     updateTimerDisplay();
 };
 
