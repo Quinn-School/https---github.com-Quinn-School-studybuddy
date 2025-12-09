@@ -1,15 +1,16 @@
 
 
-//const WORK_DURATION = 25 * 60;
-//const BREAK_DURATION = 10 * 60;
+const WORK_DURATION = 25 * 60;
+const BREAK_DURATION = 10 * 60;
 
-//shortened durations for testing
-//const WORK_DURATION = 15;
-//const BREAK_DURATION = 5;
+
+
+
+
 
 let audioCtx = null;
 
-let mode = 'work'; // 'work' or 'break'
+let mode = 'work'; 
 let time = WORK_DURATION;
 let timerInterval = null;
 
@@ -18,7 +19,7 @@ function updateTimerDisplay() {
     const secs = time % 60;
     document.getElementById("timer-display").textContent =
         `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-    // update mode display if present
+    // 
     const modeEl = document.getElementById('timer-mode');
     if (modeEl) modeEl.textContent = mode === 'work' ? 'Work' : 'Break';
 }
@@ -76,11 +77,10 @@ function requestNotificationPermission() {
     }
 }
 
-// play a short beep sound 
-//just placeholder for now
+// play a short beep sound
 function playBeep() {
     try {
-        // create the AudioContext on demand (should be created after a user gesture)
+        
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const ctx = audioCtx;
         const o = ctx.createOscillator();
@@ -121,7 +121,7 @@ function startInterval() {
                 updateTimerDisplay();
                 startInterval(); // autoplay break
             } else {
-                // finished a break session — switch back to work and autoplay the next work session
+                // finished a break session
                 mode = 'work';
                 time = WORK_DURATION;
                 updateTimerDisplay();
@@ -143,12 +143,24 @@ document.getElementById("start-btn").onclick = () => {
     startInterval();
 };
 
+document.getElementById("pause-btn").onclick = () => {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        document.getElementById("pause-btn").textContent = "Resume";
+    } else {
+        document.getElementById("pause-btn").textContent = "Pause";
+        startInterval();
+    }
+};
+
 document.getElementById("reset-btn").onclick = () => {
     clearInterval(timerInterval);
     timerInterval = null;
     mode = 'work';
     time = WORK_DURATION;
     updateTimerDisplay();
+    document.getElementById("pause-btn").textContent = "Pause";
 };
 
 updateTimerDisplay();

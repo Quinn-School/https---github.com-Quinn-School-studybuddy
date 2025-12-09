@@ -1,30 +1,46 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f7f9f8; 
     margin: 0;
     padding: 20px;
+    color: #274949; 
 }
 
 header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .card {
-    background: rgb(255, 255, 255);
-    padding: 20px;
-    margin-bottom: 20px;
+    background: #ffffff;
+    padding: 16px;
+    margin-bottom: 16px;
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 4px rgba(39,73,73,0.06);
+    border: 1px solid rgba(39,73,73,0.04);
 }
 
 #timer-display {
-    font-size: 40px;
-    font-weight: bold;
+    font-size: 36px;
+    font-weight: 700;
     margin: 10px 0;
+    color: #2f6f6a; 
 }
 
 button {
-    padding: 8px 15px;
-    margin-top: 10px;
-    cursor: pointer;}
+    padding: 8px 14px;
+    margin-top: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid rgba(39,73,73,0.06);
+    background: #eef6f5;
+    color: #274949;
+}
+
+button:hover {
+    background: #e1efee;
+}
+
+@media (max-width: 600px) {
+    #timer-display { font-size: 28px; }
+}
