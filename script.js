@@ -1,10 +1,9 @@
 
 
-//const WORK_DURATION = 25 * 60;
-//const BREAK_DURATION = 10 * 60;
+const WORK_DURATION = 25 * 60;
+const BREAK_DURATION = 10 * 60;
 
-const WORK_DURATION = 10;
-const BREAK_DURATION = 5;
+
 
 
 
